@@ -1,0 +1,29 @@
+from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+browser = webdriver.Firefox()
+type(browser)
+browser.get('http://freshdirect.com')
+browser.implicitly_wait(25)
+
+linkElem = browser.find_element_by_class_name('locabar-user-action')
+type(linkElem)
+linkElem.click()
+
+loginElem = browser.find_element_by_id('email')
+loginElem.send_keys('paul.campbell@roivant.com')
+passwordElem = browser.find_element_by_id('password')
+passwordElem.send_keys('fresh123')
+signinElem = browser.find_element_by_id('signinbtn')
+signinElem.click()
+
+orderElem = browser.find_element_by_xpath('/html/body/div[7]/div/div[6]/a')
+type(orderElem)
+
+orderElem.click()
+modifytuesday13thElem = browser.find_element_by_xpath('/html/body/div[9]/div/div[3]/div[1]/div[1]/div[1]/div/div[3]/div[2]/button')
+modifytuesday13thElem.click()
+
+addcokeElem = browser.find_element_by_class_name('quantity_plus')
+actions = ActionChains(browser)
+actions.move_to_element(addcokeElem).click()
+addcokeElem.click()
