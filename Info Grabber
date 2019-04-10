@@ -1,0 +1,161 @@
+from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+import re
+
+desired_product_quantities = {'''LaCroix Sparkling Water, Coconut, Cans''':3,
+                              '''Ito En Teas' Tea, Jasmine Green, Plastic Bottles''':2,
+                              '''Coca-Cola Cola, Classic, Cans''':4,
+                              '''Coca-Cola Zero Sugar Cola, Cans''':5
+                              }
+chrome_options = Options()
+chrome_options.add_argument('--start-maximized')
+chrome_options.add_argument('--disable-infobars')
+chrome_options.add_argument('user-data-dir=selenium')
+
+browser = webdriver.Chrome(chrome_options = chrome_options)
+type(browser)
+browser.get('http://freshdirect.com')
+browser.get_cookies()
+browser.implicitly_wait(10)
+
+try:
+    close_popup = browser.find_element_by_xpath('//*[@id="ajaxpopup"]/div/div/div[1]/button[2]')
+    type(close_popup)
+    close_popup.click()
+except:
+    pass
+
+#linkElem = browser.find_element_by_class_name('locabar-user-action')
+#type(linkElem)
+#linkElem.click()
+
+#loginElem = browser.find_element_by_id('email')
+#loginElem.send_keys('paul.campbell@roivant.com')
+#passwordElem = browser.find_element_by_id('password')
+#passwordElem.send_keys('********')
+#signinElem = browser.find_element_by_id('signinbtn')
+#signinElem.send_keys(Keys.ENTER)
+
+orderElem = browser.find_element_by_xpath('//*[@id="topnavitem_standingorders"]/a')
+type(orderElem)
+orderElem.click()
+
+try:
+    passwordElem = browser.find_element_by_id('password')
+    passwordElem.send_keys('fresh123')
+except:
+    pass
+
+try:
+    signinElem = browser.find_element_by_id('signinbtn')
+    signinElem.send_keys(Keys.ENTER)
+except:
+    pass
+
+try:
+    orderElem2 = browser.find_element_by_xpath('//*[@id="topnavitem_standingorders"]/a')
+    type(orderElem2)
+    orderElem2.click()
+except:
+    pass
+
+modifytuesday13thElem = browser.find_element_by_xpath('/html/body/div[9]/div/div[3]/div[1]/div[1]/div[1]/div/div[3]/div[2]/button')
+modifytuesday13thElem.click()
+#altXpath: 
+
+beveragesElem = browser.find_element_by_css_selector('div.cartsection:nth-child(1) > h2:nth-child(1) > span:nth-child(1)')
+beveragesElem.text
+browser.execute_script('return arguments[0].scrollIntoView();', beveragesElem)
+
+#buttonElem = browser.find_element_by_id('<button id="qty_plus_cartline_change_1221067058" type="button" class="quantity_plus " data-component="quantitybox.inc">+<span class="offscreen">Increase the Quantity 1</span></button>')
+
+from bs4 import BeautifulSoup
+html = browser.page_source
+soup = BeautifulSoup(html, 'html.parser')
+
+print(html[:500])
+
+cartline = soup.find_all('div', attrs={'class':'cartline-title cartline-box'})
+print(type(cartline))
+print(len(cartline))
+
+values = soup.find_all('a')
+print(type(values))
+print(len(values))
+#print(values)
+
+spans = soup.find_all('span')
+#print(spans)
+
+inputs = soup.find_all('input')
+print(type(inputs))
+print(len(inputs))
+print(inputs)
+
+fd = []
+cart_items = []
+needed_value = []
+standing_value = []
+
+
+
+def get_ids():
+    for result in cartline:
+        cart_item = str(result.find('a', {'class':'cartline-link'}, href = re.compile('/product_modify.jsp')))
+        #print(type(cart_item))
+        #print(cart_item)
+        cart_items.append(cart_item)
+get_ids()
+
+def get_tags():
+    for tag in cart_items:
+        new_soup = BeautifulSoup(tag, 'html.parser')
+        #print(new_soup)
+        current_id = new_soup.find('a').get('id')
+        current_product_name = new_soup.find('a').contents[0]
+        current_desired_quantity=0
+        current_product = {'id':current_id, 'product_name': current_product_name}
+        fd.append(current_product)
+get_tags()
+
+def get_values():
+    for items in inputs:
+        standing_order_value = str(items.get('value'))
+        print(standing_order_value)
+        for node in standing_order_value:
+            re.sub(r'\D', '', node)
+        current_value = {'Quantity':standing_order_value}
+        print(current_value)
+        fd.append(current_value)
+get_values()
+
+
+# New dictionary: values = {input id: value, input id2: value2}
+# To use it: values[d['id']]
+#
+#Combining dictionaries
+#for d in fd:
+    #d['desired_value'] = desired_product_quantities[d['product_name']]
+    #d['current_value'] = values[d['id']]
+
+#for d in fd:
+   #quantity = desired_product_quantities[d['product_name']]-values[d['id']]
+   #id = d['id'].split('_')[2]
+#print (id)
+
+
+with open('Dictionaries.txt', 'w+') as create_text_file:
+    for item in cart_items:
+        create_text_file.write('%s\n' % item)
+
+
+
+
+
+ids = []
