@@ -1,0 +1,29 @@
+from bs4 import BeautifulSoup
+fd = []
+
+html = '''<input id="qty_cartline_change_-1313013247" class="qty" type="text" name="qty" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_112550273" class="qty" type="text" name="qty" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_112551625" class="qty" type="text" name="qty" value="6" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_112559375" class="qty" type="text" name="qty" value="2" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_112550126" class="qty" type="text" name="qty" value="5" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_940553720" class="qty" type="text" name="qty" value="9" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_046153720" class="qty" type="text" name="qty" value="3" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_025653720" class="qty" type="text" name="qty" value="4" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_014653720" class="qty" type="text" name="qty" value="5" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_048653720" class="qty" type="text" name="qty" value="1" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_149253720" class="qty" type="text" name="qty" value="2" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">
+<input id="qty_cartline_change_112954720" class="qty" type="text" name="qty" value="2" maxlength="4" data-component="quantitybox.value" data-productdata-name="quantity">'''
+
+soup = BeautifulSoup(html, 'lxml')
+values = [item['value'] for item in soup.select("input[value]")]
+current_values = {'Quantity':values}
+print(current_values)
+
+def get_values():
+    for items in soup:
+        standing_order_value = [item['value'] for item in soup.select("input[value]")]
+        print(standing_order_value)
+        current_value = {'Quantity':standing_order_value}
+        print(current_value)
+        fd.append(current_value)
+get_values()
