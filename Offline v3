@@ -1,0 +1,96 @@
+import bs4
+import re
+from bs4 import BeautifulSoup
+import pandas
+import itertools
+import re
+
+html = open("C:\\Users\\trent.williams\\Documents\\FreshDirect Text.txt")
+soup = BeautifulSoup(html, 'lxml')
+
+cartline = soup.find_all('div', attrs={'class':'cartline-title cartline-box'})
+print(type(cartline))
+print(len(cartline))
+
+values = soup.find_all('a')
+print(type(values))
+print(len(values))
+
+fd = []
+cart_items = []
+needed_value = []
+standing_value = []
+
+def get_values():
+    inputs = str(soup.find_all('input', class_='qty'))
+    print(type(inputs))
+    print(len(inputs))
+    cart_items.append(inputs)
+get_values()
+
+def get_ids():
+    for result in cartline:
+        cart_item = str(result.find('a', {'class':'cartline-link'}, href = re.compile('/product_modify.jsp')))
+        cart_items.append(cart_item)
+get_ids()
+
+def get_tags():
+    new_soup = BeautifulSoup(str(cart_items), 'lxml')
+    idlist = []
+    current_id = new_soup.find_all('a')
+    for x in current_id:
+        ids = x.get('id')[14:]
+        idlist.append(ids)
+    namelist = []
+    current_product_name = new_soup.find_all('a')
+    for y in current_product_name:
+        product_name = y.contents[0]
+        namelist.append(product_name)
+    current_quantity = new_soup.find_all('input')
+    quantitylist = []
+    for z in current_quantity:
+        quantity = z.get('value')
+        quantitylist.append(quantity)
+    current_product = list(zip(idlist, namelist, quantitylist))
+    fd.append(current_product)
+get_tags()
+
+print(fd)
+
+print({})
+
+import pandas as pd
+
+spreadsheet_data = []
+data = pd.read_excel("C:\\Users\\trent.williams\\Desktop\\13thFloor.xlsx")
+info = [*data.itertuples(index=False, name=False)]
+spreadsheet_data.append(info)
+print(spreadsheet_data)
+
+
+def find_match(fd, spreadsheet_data):
+   
+    for index, item in enumerate(fd[0]):
+        
+        for index, item2 in enumerate(spreadsheet_data[0]):
+            for item3 in item:
+                for item4 in item2:
+                    if item3==item4:
+                        return True
+    return False
+
+                    
+def main():
+    did_it_match = find_match(fd, spreadsheet_data)
+    print(did_it_match)
+main()
+
+s = '<button id="qty_plus_cartline_change_1221067058" type="button" class="quantity_plus " data-component="quantitybox.inc">+<span class="offscreen">Increase the Quantity 1</span></button>'
+
+wonderful = []
+newer_soup = BeautifulSoup(str(cart_items), 'lxml')
+current_id = newer_soup.find_all('a')
+for t in current_id:
+    ids = t.get('id')[14:]
+    wonderful.append(ids)
+print(wonderful)
