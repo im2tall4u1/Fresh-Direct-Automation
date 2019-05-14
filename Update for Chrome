@@ -1,0 +1,46 @@
+from selenium import webdriver 
+import requests
+from bs4 import BeautifulSoup
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+
+
+chrome_options = Options()
+chrome_options.add_argument('--start-maximized')
+chrome_options.add_argument('--disable-infobars')
+chrome_options.add_argument('user-data-dir=selenium')
+
+url = 'https://www.freshdirect.com'
+
+
+def find_page_items(driver,link):
+    driver.get(link)
+    res = requests.get(newlink,headers={"User-Agent":"Mozilla/5.0"})
+    soup = BeautifulSoup(res.text,"lxml")
+    name = soup.select_one("h1[itemprop='name']").text.strip()
+    print(name)
+    linkElem = browser.find_element_by_class_name('locabar-user-action')
+    type(linkElem)
+    linkElem.click()
+    loginElem = browser.find_element_by_id('email')
+    loginElem.send_keys('paul.campbell@roivant.com')
+    passwordElem = browser.find_element_by_id('password')
+    passwordElem.send_keys('fresh123')
+    signinElem = browser.find_element_by_id('signinbtn')
+    signinElem.send_keys(Keys.ENTER)
+
+
+
+
+
+if __name__ == '__main__':
+    driver = webdriver.Chrome()
+    try:
+        find_page_items(driver,url)
+    finally:
+        pass
